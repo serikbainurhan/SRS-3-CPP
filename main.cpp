@@ -4,6 +4,19 @@
 #include <chrono>
 
 using namespace std;
+
+bool readInt(int& value) {
+    if (cin >> value) {
+        return true;
+    }
+
+    cin.clear();
+    cin.ignore(10000, '\n');
+
+    cout << "Ошибка: необходимо ввести число.\n";
+    return false;
+}
+
 void workingTimeModule() {
     int workingDays;
     double rate;
@@ -14,45 +27,75 @@ void workingTimeModule() {
     cout << "========================================\n";
 
     cout << "Введите количество рабочих дней в неделю: ";
-    cin >> workingDays;
+
+    if (!readInt(workingDays)) {
+        return;
+    }
+
+    if (workingDays <= 0) {
+        cout << "Ошибка: количество рабочих дней должно быть больше 0.\n";
+        return;
+    }
 
     cout << "Введите ставку: ";
-    cin >> rate;
+
+    if (!(cin >> rate)) {
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Ошибка: необходимо ввести число.\n";
+        return;
+    }
+
+    if (rate <= 0) {
+        cout << "Ошибка: ставка должна быть больше 0.\n";
+        return;
+    }
 
     do {
         cout << "Введите количество рабочих часов в день: ";
-        cin >> hoursPerDay;
+
+        if (!(cin >> hoursPerDay)) {
+            cin.clear();
+            cin.ignore(10000, '\n');
+            cout << "Ошибка: необходимо ввести число.\n";
+            return;
+        }
+
+        if (hoursPerDay <= 0) {
+            cout << "Ошибка: количество рабочих часов в день должно быть больше 0.\n";
+            continue;
+        }
 
         double weeklyHours = workingDays * hoursPerDay;
         double requiredHours = 40 * rate;
 
-        if (hoursPerDay != 4) {
-            double deficit = requiredHours - weeklyHours;
+        double deficit = weeklyHours - requiredHours;
 
-            cout << "\nОшибка!\n";
-            cout << "При " << workingDays
-                 << "-дневной рабочей неделе "
-                 << hoursPerDay
-                 << " часа в день составляют "
-                 << weeklyHours
-                 << " часов в неделю.\n";
+        cout << "\nРасчёт:\n";
+        cout << "Рабочих часов в неделю: "
+             << weeklyHours << "\n";
+        cout << "Норма рабочего времени: "
+             << requiredHours << " часов.\n";
 
-            cout << "Дефицит рабочего времени: "
+        if (deficit > 0) {
+            cout << "Рабочее время превышает норму на "
                  << deficit
                  << " часов.\n";
-
-            cout << "Налицо факт предоставления "
-                    "заведомо ложных сведений работодателю.\n";
-
-            cout << "Необходимо ввести и подтвердить "
-                    "норму 4 часа в день.\n";
+        } 
+        else if (deficit < 0) {
+            cout << "Недостаток рабочего времени: "
+                 << -deficit
+                 << " часов.\n";
+        } 
+        else {
+            cout << "Норма рабочего времени выполнена.\n";
         }
 
-    } while (hoursPerDay != 4);
+        break;
 
-    cout << "\nНорма рабочего времени подтверждена.\n";
-    cout << "4 часа в день = 20 часов в неделю.\n";
+    } while (true);
 }
+
 void disciplinaryModule() {
     int laptopNumber;
 
@@ -84,6 +127,7 @@ void disciplinaryModule() {
     cout << "\nРезультат рассмотрения определяется "
             "в соответствии с правилами и внутренними документами ВУЗа.\n";
 }
+
 void sabotageProtocol() {
     cout << "\n========================================\n";
     cout << "   ПРОТОКОЛ РЕАГИРОВАНИЯ НА САБОТАЖ\n";
@@ -114,9 +158,11 @@ void sabotageProtocol() {
     cout << "Протокол реагирования завершён.\n";
     cout << "----------------------------------------\n";
 }
+
 int main() {
     SetConsoleOutputCP(65001);
     SetConsoleCP(65001);
+
     int choice;
 
     cout << "========================================\n";
@@ -133,7 +179,10 @@ int main() {
         cout << "6. Протокол реагирования на саботаж\n";
         cout << "7. Завершить работу\n";
         cout << "Выберите пункт: ";
-        cin >> choice;
+
+        if (!readInt(choice)) {
+            continue;
+        }
 
         switch (choice) {
 
@@ -155,34 +204,35 @@ int main() {
                 cout << "Лаборант отвечает за сохранность имущества "
                      << "компьютерного класса.\n";
                 break;
-            
+
             case 4:
                 workingTimeModule();
                 break;
-            
+
             case 5:
                 disciplinaryModule();
                 break;
-            
+
             case 6:
                 sabotageProtocol();
                 break;
+
             case 7:
                 cout << "\nПереходим к контрольному вопросу.\n";
                 break;
 
             default:
-                cout << "\nОшибка! Выберите пункт от 1 до 4.\n";
+                cout << "\nОшибка! Выберите пункт от 1 до 7.\n";
         }
 
     } while (choice != 7);
 
-    // Контрольный вопрос
     int answer;
 
     cout << "\n========================================\n";
     cout << "КОНТРОЛЬНЫЙ ВОПРОС\n";
     cout << "========================================\n";
+
     cout << "Сколько часов в неделю обязан отрабатывать "
             "лаборант на 0,5 ставки?\n";
 
