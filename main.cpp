@@ -1,5 +1,8 @@
 #include <iostream>
 #include <windows.h>
+#include <thread>
+#include <chrono>
+
 using namespace std;
 void workingTimeModule() {
     int workingDays;
@@ -81,6 +84,36 @@ void disciplinaryModule() {
     cout << "\nРезультат рассмотрения определяется "
             "в соответствии с правилами и внутренними документами ВУЗа.\n";
 }
+void sabotageProtocol() {
+    cout << "\n========================================\n";
+    cout << "   ПРОТОКОЛ РЕАГИРОВАНИЯ НА САБОТАЖ\n";
+    cout << "========================================\n";
+
+    cout << "Обнаружена попытка саботажа учебного процесса.\n";
+    cout << "Запускается протокол реагирования...\n\n";
+
+    thread incidentThread([]() {
+        cout << "[Поток 1] Фиксация инцидента...\n";
+        this_thread::sleep_for(chrono::seconds(2));
+
+        cout << "[Поток 1] Информация об инциденте сохранена.\n";
+    });
+
+    thread responseThread([]() {
+        cout << "[Поток 2] Уведомление ответственного лица...\n";
+        this_thread::sleep_for(chrono::seconds(3));
+
+        cout << "[Поток 2] Ответственное лицо уведомлено.\n";
+    });
+
+    incidentThread.join();
+    responseThread.join();
+
+    cout << "\n----------------------------------------\n";
+    cout << "Статус: Инцидент зафиксирован\n";
+    cout << "Протокол реагирования завершён.\n";
+    cout << "----------------------------------------\n";
+}
 int main() {
     SetConsoleOutputCP(65001);
     SetConsoleCP(65001);
@@ -97,7 +130,8 @@ int main() {
         cout << "3. Материальная ответственность\n";
         cout << "4. Учёт рабочего времени\n";
         cout << "5. Дисциплинарные взыскания\n";
-        cout << "6. Завершить работу\n";
+        cout << "6. Протокол реагирования на саботаж\n";
+        cout << "7. Завершить работу\n";
         cout << "Выберите пункт: ";
         cin >> choice;
 
@@ -129,15 +163,19 @@ int main() {
             case 5:
                 disciplinaryModule();
                 break;
+            
             case 6:
-            cout << "\nПереходим к контрольному вопросу.\n";
-            break;
+                sabotageProtocol();
+                break;
+            case 7:
+                cout << "\nПереходим к контрольному вопросу.\n";
+                break;
 
             default:
                 cout << "\nОшибка! Выберите пункт от 1 до 4.\n";
         }
 
-    } while (choice != 6);
+    } while (choice != 7);
 
     // Контрольный вопрос
     int answer;
